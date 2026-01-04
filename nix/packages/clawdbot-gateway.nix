@@ -15,7 +15,7 @@
 assert gatewaySrc == null || pnpmDepsHash != null;
 
 stdenv.mkDerivation (finalAttrs: {
-  pname = "clawdis-gateway";
+  pname = "clawdbot-gateway";
   version = "2.0.0-beta4";
 
   src = if gatewaySrc != null then gatewaySrc else fetchFromGitHub sourceInfo;
@@ -53,13 +53,13 @@ stdenv.mkDerivation (finalAttrs: {
 
   installPhase = ''
     runHook preInstall
-    mkdir -p $out/lib/clawdis $out/bin
+    mkdir -p $out/lib/clawdbot $out/bin
 
-    cp -r dist node_modules package.json ui $out/lib/clawdis/
+    cp -r dist node_modules package.json ui $out/lib/clawdbot/
 
-    makeWrapper ${nodejs_22}/bin/node $out/bin/clawdis \
-      --add-flags "$out/lib/clawdis/dist/index.js" \
-      --set-default CLAWDIS_NIX_MODE "1"
+    makeWrapper ${nodejs_22}/bin/node $out/bin/clawdbot \
+      --add-flags "$out/lib/clawdbot/dist/index.js" \
+      --set-default CLAWDBOT_NIX_MODE "1"
 
     runHook postInstall
   '';
@@ -69,6 +69,6 @@ stdenv.mkDerivation (finalAttrs: {
     homepage = "https://github.com/clawdbot/clawdbot";
     license = licenses.mit;
     platforms = platforms.darwin;
-    mainProgram = "clawdis";
+    mainProgram = "clawdbot";
   };
 })

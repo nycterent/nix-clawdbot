@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	name := os.Getenv("CLAWDIS_USER")
+	name := os.Getenv("CLAWDBOT_USER")
 	if name == "" {
 		name = "human"
 	}

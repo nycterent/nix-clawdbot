@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.programs.clawdis;
+  cfg = config.programs.clawdbot;
   homeDir = config.home.homeDirectory;
   appPackage = if cfg.appPackage != null then cfg.appPackage else cfg.package;
 
@@ -33,53 +33,53 @@ let
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable this Clawdis instance.";
+        description = "Enable this Clawdbot instance.";
       };
 
       package = lib.mkOption {
         type = lib.types.package;
         default = cfg.package;
-        description = "Clawdis batteries-included package.";
+        description = "Clawdbot batteries-included package.";
       };
 
       stateDir = lib.mkOption {
         type = lib.types.str;
         default = if name == "default"
-          then "${homeDir}/.clawdis"
-          else "${homeDir}/.clawdis-${name}";
-        description = "State directory for this Clawdis instance (logs, sessions, config).";
+          then "${homeDir}/.clawdbot"
+          else "${homeDir}/.clawdbot-${name}";
+        description = "State directory for this Clawdbot instance (logs, sessions, config).";
       };
 
       workspaceDir = lib.mkOption {
         type = lib.types.str;
         default = "${config.stateDir}/workspace";
-        description = "Workspace directory for this Clawdis instance.";
+        description = "Workspace directory for this Clawdbot instance.";
       };
 
       configPath = lib.mkOption {
         type = lib.types.str;
-        default = "${config.stateDir}/clawdis.json";
-        description = "Path to generated Clawdis config JSON.";
+        default = "${config.stateDir}/clawdbot.json";
+        description = "Path to generated Clawdbot config JSON.";
       };
 
       logPath = lib.mkOption {
         type = lib.types.str;
         default = if name == "default"
-          then "/tmp/clawdis/clawdis-gateway.log"
-          else "/tmp/clawdis/clawdis-gateway-${name}.log";
-        description = "Log path for this Clawdis gateway instance.";
+          then "/tmp/clawdbot/clawdbot-gateway.log"
+          else "/tmp/clawdbot/clawdbot-gateway-${name}.log";
+        description = "Log path for this Clawdbot gateway instance.";
       };
 
       gatewayPort = lib.mkOption {
         type = lib.types.int;
         default = 18789;
-        description = "Gateway port used by the Clawdis desktop app.";
+        description = "Gateway port used by the Clawdbot desktop app.";
       };
 
       gatewayPath = lib.mkOption {
         type = lib.types.nullOr lib.types.str;
         default = null;
-        description = "Local path to Clawdis gateway source (dev only).";
+        description = "Local path to Clawdbot gateway source (dev only).";
       };
 
       gatewayPnpmDepsHash = lib.mkOption {
@@ -165,27 +165,27 @@ let
       launchd.enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Run Clawdis gateway via launchd (macOS).";
+        description = "Run Clawdbot gateway via launchd (macOS).";
       };
 
       launchd.label = lib.mkOption {
         type = lib.types.str;
         default = if name == "default"
-          then "com.steipete.clawdis.gateway"
-          else "com.steipete.clawdis.gateway.${name}";
+          then "com.steipete.clawdbot.gateway"
+          else "com.steipete.clawdbot.gateway.${name}";
         description = "launchd label for this instance.";
       };
 
       app.install.enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Install Clawdis.app for this instance.";
+        description = "Install Clawdbot.app for this instance.";
       };
 
       app.install.path = lib.mkOption {
         type = lib.types.str;
-        default = "${homeDir}/Applications/Clawdis.app";
-        description = "Destination path for this instance's Clawdis.app bundle.";
+        default = "${homeDir}/Applications/Clawdbot.app";
+        description = "Destination path for this instance's Clawdbot.app bundle.";
       };
 
       appDefaults = {
@@ -205,7 +205,7 @@ let
       configOverrides = lib.mkOption {
         type = lib.types.attrs;
         default = {};
-        description = "Additional Clawdis config to merge into the generated JSON.";
+        description = "Additional Clawdbot config to merge into the generated JSON.";
       };
     };
   };
@@ -215,8 +215,8 @@ let
     package = cfg.package;
     stateDir = cfg.stateDir;
     workspaceDir = cfg.workspaceDir;
-    configPath = "${cfg.stateDir}/clawdis.json";
-    logPath = "/tmp/clawdis/clawdis-gateway.log";
+    configPath = "${cfg.stateDir}/clawdbot.json";
+    logPath = "/tmp/clawdbot/clawdbot-gateway.log";
     gatewayPort = 18789;
     providers = cfg.providers;
     routing = cfg.routing;
@@ -230,7 +230,7 @@ let
     app = {
       install = {
         enable = false;
-        path = "${homeDir}/Applications/Clawdis.app";
+        path = "${homeDir}/Applications/Clawdbot.app";
       };
     };
   };
@@ -240,7 +240,7 @@ let
     else lib.optionalAttrs cfg.enable { default = defaultInstance; };
 
   enabledInstances = lib.filterAttrs (_: inst: inst.enable) instances;
-  managedSkillsDir = "${homeDir}/.clawdis/skills";
+  managedSkillsDir = "${homeDir}/.clawdbot/skills";
 
   documentsEnabled = cfg.documents != null;
 
@@ -261,19 +261,19 @@ let
   documentsAssertions = lib.optionals documentsEnabled [
     {
       assertion = builtins.pathExists cfg.documents;
-      message = "programs.clawdis.documents must point to an existing directory.";
+      message = "programs.clawdbot.documents must point to an existing directory.";
     }
     {
       assertion = builtins.pathExists (cfg.documents + "/AGENTS.md");
-      message = "Missing AGENTS.md in programs.clawdis.documents.";
+      message = "Missing AGENTS.md in programs.clawdbot.documents.";
     }
     {
       assertion = builtins.pathExists (cfg.documents + "/SOUL.md");
-      message = "Missing SOUL.md in programs.clawdis.documents.";
+      message = "Missing SOUL.md in programs.clawdbot.documents.";
     }
     {
       assertion = builtins.pathExists (cfg.documents + "/TOOLS.md");
-      message = "Missing TOOLS.md in programs.clawdis.documents.";
+      message = "Missing TOOLS.md in programs.clawdbot.documents.";
     }
   ];
 
@@ -282,7 +282,7 @@ let
       let
         guardLine = file: ''
           if [ -e "${file}" ] && [ ! -L "${file}" ]; then
-            echo "Clawdis documents are managed by Nix. Please adopt ${file} into your documents directory and re-run." >&2
+            echo "Clawdbot documents are managed by Nix. Please adopt ${file} into your documents directory and re-run." >&2
             exit 1
           fi
         '';
@@ -325,13 +325,13 @@ let
           ];
         reportText = lib.concatStringsSep "\n" reportLines;
       in
-        pkgs.writeText "clawdis-tools-report.md" reportText
+        pkgs.writeText "clawdbot-tools-report.md" reportText
     else
       null;
 
   toolsWithReport =
     if documentsEnabled then
-      pkgs.runCommand "clawdis-tools-with-report.md" {} ''
+      pkgs.runCommand "clawdbot-tools-with-report.md" {} ''
         cat ${cfg.documents + "/TOOLS.md"} > $out
         echo "" >> $out
         cat ${toolsReport} >> $out
@@ -360,15 +360,15 @@ let
 
   resolvePlugin = plugin: let
     flake = builtins.getFlake plugin.source;
-    clawdisPlugin =
-      if flake ? clawdisPlugin then flake.clawdisPlugin
-      else throw "clawdisPlugin missing in ${plugin.source}";
-    needs = clawdisPlugin.needs or {};
+    clawdbotPlugin =
+      if flake ? clawdbotPlugin then flake.clawdbotPlugin
+      else throw "clawdbotPlugin missing in ${plugin.source}";
+    needs = clawdbotPlugin.needs or {};
   in {
     source = plugin.source;
-    name = clawdisPlugin.name or (throw "clawdisPlugin.name missing in ${plugin.source}");
-    skills = clawdisPlugin.skills or [];
-    packages = clawdisPlugin.packages or [];
+    name = clawdbotPlugin.name or (throw "clawdbotPlugin.name missing in ${plugin.source}");
+    skills = clawdbotPlugin.skills or [];
+    packages = clawdbotPlugin.packages or [];
     needs = {
       stateDirs = needs.stateDirs or [];
       requiredEnv = needs.requiredEnv or [];
@@ -390,7 +390,7 @@ let
         if duplicates == []
         then ordered
         else lib.warn
-          "programs.clawdis.instances.${instName}: duplicate plugin names detected (${lib.concatStringsSep ", " duplicates}); last entry wins."
+          "programs.clawdbot.instances.${instName}: duplicate plugin names detected (${lib.concatStringsSep ", " duplicates}); last entry wins."
           ordered
     ) enabledInstances;
 
@@ -437,11 +437,11 @@ let
           let missing = missingFor p;
           in {
             assertion = missing == [];
-            message = "programs.clawdis.instances.${instName}: plugin ${p.name} missing required env: ${lib.concatStringsSep ", " missing}";
+            message = "programs.clawdbot.instances.${instName}: plugin ${p.name} missing required env: ${lib.concatStringsSep ", " missing}";
           };
         mkConfigAssertion = p: {
           assertion = !(configMissingStateDir p);
-          message = "programs.clawdis.instances.${instName}: plugin ${p.name} provides settings but declares no stateDirs (needed for config.json).";
+          message = "programs.clawdbot.instances.${instName}: plugin ${p.name} provides settings but declares no stateDirs (needed for config.json).";
         };
       in
         (map mkAssertion plugins) ++ (map mkConfigAssertion plugins)
@@ -451,7 +451,7 @@ let
     let
       skillEntriesFor = p:
         map (skillPath: {
-          name = ".clawdis/skills/${p.name}/${builtins.baseNameOf skillPath}";
+          name = ".clawdbot/skills/${p.name}/${builtins.baseNameOf skillPath}";
           value = { source = skillPath; recursive = true; };
         }) p.skills;
       allEntries =
@@ -513,7 +513,7 @@ let
         lib.flatten (lib.concatLists (lib.mapAttrsToList (_: plugins:
           map (p:
             map (skillPath:
-              ".clawdis/skills/${p.name}/${builtins.baseNameOf skillPath}"
+              ".clawdbot/skills/${p.name}/${builtins.baseNameOf skillPath}"
             ) p.skills
           ) plugins
         ) resolvedPluginsByInstance));
@@ -531,10 +531,10 @@ let
   mkInstanceConfig = name: inst: let
     gatewayPackage =
       if inst.gatewayPath != null then
-        pkgs.callPackage ../../packages/clawdis-gateway.nix {
+        pkgs.callPackage ../../packages/clawdbot-gateway.nix {
           gatewaySrc = builtins.path {
             path = inst.gatewayPath;
-            name = "clawdis-gateway-src";
+            name = "clawdbot-gateway-src";
           };
           pnpmDepsHash = inst.gatewayPnpmDepsHash;
         }
@@ -547,7 +547,7 @@ let
       (lib.recursiveUpdate baseConfig (lib.recursiveUpdate (mkTelegramConfig inst) (mkRoutingConfig inst)))
       inst.configOverrides;
     configJson = builtins.toJSON mergedConfig;
-    gatewayWrapper = pkgs.writeShellScriptBin "clawdis-gateway-${name}" ''
+    gatewayWrapper = pkgs.writeShellScriptBin "clawdbot-gateway-${name}" ''
       set -euo pipefail
 
       if [ "${toString (pluginPackages != [])}" = "true" ]; then
@@ -569,7 +569,7 @@ let
         export ANTHROPIC_API_KEY
       fi
 
-      exec "${gatewayPackage}/bin/clawdis" "$@"
+      exec "${gatewayPackage}/bin/clawdbot" "$@"
     '';
   in {
     homeFile = {
@@ -585,7 +585,7 @@ let
         config = {
           Label = inst.launchd.label;
           ProgramArguments = [
-            "${gatewayWrapper}/bin/clawdis-gateway-${name}"
+            "${gatewayWrapper}/bin/clawdbot-gateway-${name}"
             "gateway"
             "--port"
             "${toString inst.gatewayPort}"
@@ -597,10 +597,10 @@ let
           StandardErrorPath = inst.logPath;
           EnvironmentVariables = {
             HOME = homeDir;
-            CLAWDIS_CONFIG_PATH = inst.configPath;
-            CLAWDIS_STATE_DIR = inst.stateDir;
-            CLAWDIS_IMAGE_BACKEND = "sips";
-            CLAWDIS_NIX_MODE = "1";
+            CLAWDBOT_CONFIG_PATH = inst.configPath;
+            CLAWDBOT_STATE_DIR = inst.stateDir;
+            CLAWDBOT_IMAGE_BACKEND = "sips";
+            CLAWDBOT_NIX_MODE = "1";
           };
         };
       };
@@ -616,7 +616,7 @@ let
     else {
       name = lib.removePrefix "${homeDir}/" inst.app.install.path;
       value = {
-        source = "${appPackage}/Applications/Clawdis.app";
+        source = "${appPackage}/Applications/Clawdbot.app";
         recursive = true;
         force = true;
       };
@@ -636,46 +636,46 @@ let
   assertions = lib.flatten (lib.mapAttrsToList (name: inst: [
     {
       assertion = !inst.providers.telegram.enable || inst.providers.telegram.botTokenFile != "";
-      message = "programs.clawdis.instances.${name}.providers.telegram.botTokenFile must be set when Telegram is enabled.";
+      message = "programs.clawdbot.instances.${name}.providers.telegram.botTokenFile must be set when Telegram is enabled.";
     }
     {
       assertion = !inst.providers.telegram.enable || (lib.length inst.providers.telegram.allowFrom > 0);
-      message = "programs.clawdis.instances.${name}.providers.telegram.allowFrom must be non-empty when Telegram is enabled.";
+      message = "programs.clawdbot.instances.${name}.providers.telegram.allowFrom must be non-empty when Telegram is enabled.";
     }
   ]) enabledInstances);
 
 in {
-  options.programs.clawdis = {
-    enable = lib.mkEnableOption "Clawdis (batteries-included)";
+  options.programs.clawdbot = {
+    enable = lib.mkEnableOption "Clawdbot (batteries-included)";
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.clawdis;
-      description = "Clawdis batteries-included package.";
+      default = pkgs.clawdbot;
+      description = "Clawdbot batteries-included package.";
     };
 
     appPackage = lib.mkOption {
       type = lib.types.nullOr lib.types.package;
       default = null;
-      description = "Optional Clawdis app package (defaults to package if unset).";
+      description = "Optional Clawdbot app package (defaults to package if unset).";
     };
 
     installApp = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Install Clawdis.app at the default location.";
+      description = "Install Clawdbot.app at the default location.";
     };
 
     stateDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homeDir}/.clawdis";
-      description = "State directory for Clawdis (logs, sessions, config).";
+      default = "${homeDir}/.clawdbot";
+      description = "State directory for Clawdbot (logs, sessions, config).";
     };
 
     workspaceDir = lib.mkOption {
       type = lib.types.str;
-      default = "${homeDir}/.clawdis/workspace";
-      description = "Workspace directory for Clawdis agent skills.";
+      default = "${homeDir}/.clawdbot/workspace";
+      description = "Workspace directory for Clawdbot agent skills.";
     };
 
     documents = lib.mkOption {
@@ -754,20 +754,20 @@ in {
     launchd.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Run Clawdis gateway via launchd (macOS).";
+      description = "Run Clawdbot gateway via launchd (macOS).";
     };
 
     instances = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule instanceModule);
       default = {};
-      description = "Named Clawdis instances (prod/test).";
+      description = "Named Clawdbot instances (prod/test).";
     };
 
     reloadScript = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Install clawdis-reload helper for no-sudo config refresh + gateway restart.";
+        description = "Install clawdbot-reload helper for no-sudo config refresh + gateway restart.";
       };
     };
   };
@@ -776,7 +776,7 @@ in {
     assertions = assertions ++ [
       {
         assertion = lib.length (lib.attrNames appDefaultsEnabled) <= 1;
-        message = "Only one Clawdis instance may enable appDefaults.";
+        message = "Only one Clawdbot instance may enable appDefaults.";
       }
     ] ++ documentsAssertions ++ pluginAssertions ++ pluginSkillAssertions;
 
@@ -785,8 +785,8 @@ in {
     home.file =
       (lib.listToAttrs (map (item: item.homeFile) instanceConfigs))
       // (lib.optionalAttrs (pkgs.stdenv.hostPlatform.isDarwin && appPackage != null && cfg.installApp) {
-        "Applications/Clawdis.app" = {
-          source = "${appPackage}/Applications/Clawdis.app";
+        "Applications/Clawdbot.app" = {
+          source = "${appPackage}/Applications/Clawdbot.app";
           recursive = true;
           force = true;
         };
@@ -796,33 +796,33 @@ in {
       // pluginSkillsFiles
       // pluginConfigFiles
       // (lib.optionalAttrs cfg.reloadScript.enable {
-        ".local/bin/clawdis-reload" = {
+        ".local/bin/clawdbot-reload" = {
           executable = true;
-          source = ./clawdis-reload.sh;
+          source = ./clawdbot-reload.sh;
         };
       });
 
-    home.activation.clawdisDocumentGuard = lib.mkIf documentsEnabled (
+    home.activation.clawdbotDocumentGuard = lib.mkIf documentsEnabled (
       lib.hm.dag.entryBefore [ "writeBoundary" ] ''
         set -euo pipefail
         ${documentsGuard}
       ''
     );
 
-    home.activation.clawdisDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.clawdbotDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       /bin/mkdir -p ${lib.concatStringsSep " " (lib.concatMap (item: item.dirs) instanceConfigs)}
       ${lib.optionalString (pluginStateDirsAll != []) "/bin/mkdir -p ${lib.concatStringsSep " " pluginStateDirsAll}"}
     '';
 
-    home.activation.clawdisPluginGuard = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.clawdbotPluginGuard = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       set -euo pipefail
       ${pluginGuards}
     '';
 
-    home.activation.clawdisAppDefaults = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && appDefaults != {}) (
+    home.activation.clawdbotAppDefaults = lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && appDefaults != {}) (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        /usr/bin/defaults write com.steipete.Clawdis clawdis.gateway.attachExistingOnly -bool ${lib.boolToString (appDefaults.attachExistingOnly or true)}
-        /usr/bin/defaults write com.steipete.Clawdis gatewayPort -int ${toString (appDefaults.gatewayPort or 18789)}
+        /usr/bin/defaults write com.steipete.Clawdbot clawdbot.gateway.attachExistingOnly -bool ${lib.boolToString (appDefaults.attachExistingOnly or true)}
+        /usr/bin/defaults write com.steipete.Clawdbot gatewayPort -int ${toString (appDefaults.gatewayPort or 18789)}
       ''
     );
 

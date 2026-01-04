@@ -4,11 +4,11 @@
 }:
 
 stdenvNoCC.mkDerivation {
-  pname = "clawdis-app";
+  pname = "clawdbot-app";
   version = "2.0.0-beta4";
 
   src = fetchzip {
-    url = "https://github.com/clawdbot/clawdbot/releases/download/v2.0.0-beta4/Clawdis-2.0.0-beta4.zip";
+    url = "https://github.com/clawdbot/clawdbot/releases/download/v2.0.0-beta4/Clawdbot-2.0.0-beta4.zip";
     hash = "sha256-Oa7cejVFfZtJBSmjDaRjqocVyXo+WeS/xucGpJFDzIg=";
     stripRoot = false;
   };
@@ -18,12 +18,12 @@ stdenvNoCC.mkDerivation {
   installPhase = ''
     runHook preInstall
     mkdir -p $out/Applications
-    app_path="$(find "$src" -maxdepth 2 -name 'Clawdis.app' -print -quit)"
+    app_path="$(find "$src" -maxdepth 2 -name 'Clawdbot.app' -print -quit)"
     if [ -z "$app_path" ]; then
-      echo "Clawdis.app not found in $src" >&2
+      echo "Clawdbot.app not found in $src" >&2
       exit 1
     fi
-    cp -R "$app_path" "$out/Applications/Clawdis.app"
+    cp -R "$app_path" "$out/Applications/Clawdbot.app"
     runHook postInstall
   '';
 

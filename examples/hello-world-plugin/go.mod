@@ -1,3 +1,3 @@
-module github.com/acme/hello-world-clawdis
+module github.com/acme/hello-world-clawdbot
 
 go 1.22

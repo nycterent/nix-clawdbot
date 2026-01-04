@@ -21,20 +21,20 @@
       in
       {
         packages = {
-          clawdis-gateway = pkgs.clawdis-gateway;
-          clawdis-app = pkgs.clawdis-app;
-          clawdis = pkgs.clawdis;
-          clawdis-tools-base = pkgs.clawdis-tools-base;
-          clawdis-tools-extended = pkgs.clawdis-tools-extended;
-          default = pkgs.clawdis;
+          clawdbot-gateway = pkgs.clawdbot-gateway;
+          clawdbot-app = pkgs.clawdbot-app;
+          clawdbot = pkgs.clawdbot;
+          clawdbot-tools-base = pkgs.clawdbot-tools-base;
+          clawdbot-tools-extended = pkgs.clawdbot-tools-extended;
+          default = pkgs.clawdbot;
         };
 
         apps = {
-          clawdis = flake-utils.lib.mkApp { drv = pkgs.clawdis-gateway; };
+          clawdbot = flake-utils.lib.mkApp { drv = pkgs.clawdbot-gateway; };
         };
 
         checks = pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-          gateway = pkgs.clawdis-gateway;
+          gateway = pkgs.clawdbot-gateway;
         };
 
         devShells.default = pkgs.mkShell {
@@ -47,7 +47,7 @@
       }
     ) // {
       overlays.default = overlay;
-      homeManagerModules.clawdis = import ./nix/modules/home-manager/clawdis.nix;
-      darwinModules.clawdis = import ./nix/modules/darwin/clawdis.nix;
+      homeManagerModules.clawdbot = import ./nix/modules/home-manager/clawdbot.nix;
+      darwinModules.clawdbot = import ./nix/modules/darwin/clawdbot.nix;
     };
 }

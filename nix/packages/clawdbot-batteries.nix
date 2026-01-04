@@ -1,13 +1,13 @@
 { lib
 , buildEnv
-, clawdis-gateway
-, clawdis-app
+, clawdbot-gateway
+, clawdbot-app
 , extendedTools
 }:
 
 buildEnv {
-  name = "clawdis-2.0.0-beta4";
-  paths = [ clawdis-gateway clawdis-app ] ++ extendedTools;
+  name = "clawdbot-2.0.0-beta4";
+  paths = [ clawdbot-gateway clawdbot-app ] ++ extendedTools;
   pathsToLink = [ "/bin" "/Applications" ];
 
   meta = with lib; {

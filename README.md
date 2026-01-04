@@ -64,7 +64,7 @@ What I need you to do:
 1. Check if Determinate Nix is installed (if not, install it)
 2. Create a local flake at ~/code/clawdbot-local using templates/agent-first/flake.nix
 3. Create a docs dir next to the config (e.g., ~/code/clawdbot-local/documents) with AGENTS.md, SOUL.md, TOOLS.md
-   - If ~/.clawdis/workspace already has these files, adopt them into the documents dir first
+   - If ~/.clawdbot/workspace already has these files, adopt them into the documents dir first
 3. Help me create a Telegram bot (@BotFather) and get my chat ID (@userinfobot)
 4. Set up secrets (bot token, Anthropic key) - plain files at ~/.secrets/ is fine
 5. Fill in the template placeholders and run home-manager switch
@@ -85,7 +85,7 @@ Use this for the simplest setup. For richer config (per‑group overrides), use
 
 ```nix
 {
-  programs.clawdis = {
+  programs.clawdbot = {
     enable = true;
     providers.telegram = {
       enable = true;
@@ -109,20 +109,20 @@ Then: `home-manager switch --flake .#youruser`
 ## Small but useful config (sensible defaults)
 
 This is still single‑instance, but uses `instances.default` to unlock per‑group mention rules.
-If `instances` is set, you don’t need `programs.clawdis.enable`.
+If `instances` is set, you don’t need `programs.clawdbot.enable`.
 Group mention overrides below mirror upstream Clawdbot config.
 Secrets are shown using `/run/agenix/...` (from a repo with your agenix secrets), but any file path works.
 Docs are managed from `./documents` and symlinked into the workspace on each switch.
 
 ```nix
 {
-  programs.clawdis = {
+  programs.clawdbot = {
     documents = ./documents;
     instances.default = {
       enable = true;
-      package = pkgs.clawdis; # batteries-included
-      stateDir = "~/.clawdis";
-      workspaceDir = "~/.clawdis/workspace";
+      package = pkgs.clawdbot; # batteries-included
+      stateDir = "~/.clawdbot";
+      workspaceDir = "~/.clawdbot/workspace";
 
       providers.telegram = {
         enable = true;
@@ -190,7 +190,7 @@ let
   prod = {
     enable = true;
     # Prod gateway pin (comes from nix-clawdbot input @ v0.1.0 above).
-    package = inputs.nix-clawdbot.packages.${pkgs.system}.clawdis-gateway;
+    package = inputs.nix-clawdbot.packages.${pkgs.system}.clawdbot-gateway;
     providers.telegram.enable = true;
     providers.telegram.botTokenFile = "/run/agenix/telegram-prod";
     providers.telegram.allowFrom = [ 12345678 ];
@@ -199,10 +199,10 @@ let
   };
 in {
   # Pinned macOS app (POC: no local app builds, uses nix-clawdbot @ v0.1.0 above).
-  programs.clawdis.appPackage =
-    inputs.nix-clawdbot.packages.${pkgs.system}.clawdis-app;
-  programs.clawdis.documents = ./documents;
-  programs.clawdis.instances = {
+  programs.clawdbot.appPackage =
+    inputs.nix-clawdbot.packages.${pkgs.system}.clawdbot-app;
+  programs.clawdbot.documents = ./documents;
+  programs.clawdbot.instances = {
     prod = prod;
     dev = prod // {
       # Dev uses the same pinned macOS app (from nix-clawdbot input),
@@ -247,7 +247,7 @@ your-plugin/
 
 Example implementation: `examples/hello-world-plugin`.
 
-**`flake.nix` (minimal `clawdisPlugin`):**
+**`flake.nix` (minimal `clawdbotPlugin`):**
 
 ```nix
 {
@@ -255,7 +255,7 @@ Example implementation: `examples/hello-world-plugin`.
     let
       pkgs = import nixpkgs { system = builtins.currentSystem; };
     in {
-      clawdisPlugin = {
+      clawdbotPlugin = {
         name = "hello-world";
         skills = [ ./skills/hello-world ];
         packages = [ pkgs.hello ]; # example CLI
@@ -289,14 +289,14 @@ per‑plugin `config`.
 Goal: Make this repo a nix‑clawdbot‑native plugin with the standard contract.
 
 Contract to implement:
-1) Add clawdisPlugin output in flake.nix:
+1) Add clawdbotPlugin output in flake.nix:
    - name
    - skills (paths to SKILL.md dirs)
    - packages (CLI packages to put on PATH)
    - needs (stateDirs + requiredEnv)
 
 Example:
-clawdisPlugin = {
+clawdbotPlugin = {
   name = "my-plugin";
   skills = [ ./skills/my-plugin ];
   packages = [ self.packages.${system}.default ];
@@ -351,8 +351,8 @@ Deliverables: flake output, env overrides, AGENTS.md, skill update.
 
 ## How it wires up
 
-- Nix pulls the plugin, reads `clawdisPlugin`, and installs the CLI(s).
-- Skills are symlinked into `~/.clawdis/skills/<plugin>/<skill>`.
+- Nix pulls the plugin, reads `clawdbotPlugin`, and installs the CLI(s).
+- Skills are symlinked into `~/.clawdbot/skills/<plugin>/<skill>`.
 - Clawdbot loads managed skills automatically at runtime.
 - Any plugin services run as **user‑level** launchd agents (no sudo).
 - MVP scope: tools/skills should come **from plugins only** (no ad‑hoc installs).
@@ -360,8 +360,8 @@ Deliverables: flake output, env overrides, AGENTS.md, skill update.
 
 ## What you get
 
-- Launchd keeps the gateway alive (`com.steipete.clawdis.gateway`)
-- Logs at `/tmp/clawdis/clawdis-gateway.log`
+- Launchd keeps the gateway alive (`com.steipete.clawdbot.gateway`)
+- Logs at `/tmp/clawdbot/clawdbot-gateway.log`
 - Message your bot in Telegram, get a response
 - All the tools: whisper, spotify_player, camsnap, peekaboo, and more
 
@@ -381,9 +381,9 @@ Deliverables: flake output, env overrides, AGENTS.md, skill update.
 
 | Package | Contents |
 | --- | --- |
-| `clawdis` (default) | Gateway + app + full toolchain |
-| `clawdis-gateway` | Gateway CLI only |
-| `clawdis-app` | macOS app only |
+| `clawdbot` (default) | Gateway + app + full toolchain |
+| `clawdbot-gateway` | Gateway CLI only |
+| `clawdbot-app` | macOS app only |
 
 ## Plugin collisions (override policy)
 
@@ -407,13 +407,13 @@ We should warn on collisions so it’s obvious.
 
 ```bash
 # Check service
-launchctl print gui/$UID/com.steipete.clawdis.gateway | grep state
+launchctl print gui/$UID/com.steipete.clawdbot.gateway | grep state
 
 # View logs
-tail -50 /tmp/clawdis/clawdis-gateway.log
+tail -50 /tmp/clawdbot/clawdbot-gateway.log
 
 # Restart
-launchctl kickstart -k gui/$UID/com.steipete.clawdis.gateway
+launchctl kickstart -k gui/$UID/com.steipete.clawdbot.gateway
 
 # Rollback
 home-manager generations  # list

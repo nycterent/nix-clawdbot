@@ -18,7 +18,7 @@
       homeConfigurations."<user>" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
-          nix-clawdbot.homeManagerModules.clawdis
+          nix-clawdbot.homeManagerModules.clawdbot
           {
             # Required for Home Manager standalone
             home.username = "<user>";
@@ -26,7 +26,7 @@
             home.stateVersion = "24.11";
             programs.home-manager.enable = true;
 
-            programs.clawdis = {
+            programs.clawdbot = {
               # REPLACE: path to your managed documents directory
               documents = ./documents;
               instances.default = {

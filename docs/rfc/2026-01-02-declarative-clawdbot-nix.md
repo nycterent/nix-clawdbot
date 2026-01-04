@@ -61,19 +61,19 @@ Non‑goals:
 
 - **Package derivation**: builds Clawdbot gateway from a pinned source.
 - **App bundle**: installs Clawdbot.app from a pinned DMG matching the gateway version.
-- **Home Manager module**: declarative config, writes `~/.clawdis/clawdis.json`, manages services.
+- **Home Manager module**: declarative config, writes `~/.clawdbot/clawdbot.json`, manages services.
 - **Flake outputs**:
-  - `packages.<system>.clawdis` (default batteries‑included bundle)
-  - `packages.<system>.clawdis-gateway`
-  - `packages.<system>.clawdis-app`
-  - `packages.<system>.clawdis-tools-base`
-  - `packages.<system>.clawdis-tools-extended`
-  - `homeManagerModules.clawdis`
-  - `darwinModules.clawdis` (if needed)
+  - `packages.<system>.clawdbot` (default batteries‑included bundle)
+  - `packages.<system>.clawdbot-gateway`
+  - `packages.<system>.clawdbot-app`
+  - `packages.<system>.clawdbot-tools-base`
+  - `packages.<system>.clawdbot-tools-extended`
+  - `homeManagerModules.clawdbot`
+  - `darwinModules.clawdbot` (if needed)
 
 ## 5) Configuration model (public contract)
 
-The Home Manager module is the public contract. It must expose a small, explicit option set (enable, token path, allowlist) and render a deterministic `~/.clawdis/clawdis.json`.
+The Home Manager module is the public contract. It must expose a small, explicit option set (enable, token path, allowlist) and render a deterministic `~/.clawdbot/clawdbot.json`.
 
 The design constraint: users should not have to write arbitrary JSON. The module is the supported configuration surface for v1.
 
@@ -124,8 +124,8 @@ No changes to personal `nixos-config` are made in this repo; this is a plan only
 This RFC is complete when:
 - The repo is public with a clear README and agent‑first guide.
 - Telegram‑first quickstart works on macOS with a real bot token.
-- `nix run .#clawdis` installs gateway + app + tools.
-- Launchd uses `com.steipete.clawdis.gateway` and logs to `/tmp/clawdis/clawdis-gateway.log`.
+- `nix run .#clawdbot` installs gateway + app + tools.
+- Launchd uses `com.steipete.clawdbot.gateway` and logs to `/tmp/clawdbot/clawdbot-gateway.log`.
 - App runs in attach‑only mode (does not spawn its own gateway).
 - Smoke test: user sends a Telegram message in an allowlisted chat and receives a response.
 

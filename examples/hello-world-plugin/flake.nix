@@ -22,7 +22,7 @@
           drv = self.packages.${system}.default;
         };
 
-        clawdisPlugin = {
+        clawdbotPlugin = {
           name = "hello-world";
           skills = [ ./skills/hello-world ];
           packages = [ self.packages.${system}.default ];
