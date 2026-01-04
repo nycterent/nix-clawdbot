@@ -11,16 +11,18 @@ permissions:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v16
-
-      - name: Use Magic Nix Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v8
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          nix --version
 
       - name: Resolve upstream version
         id: version
@@ -38,10 +40,17 @@ PY
           echo "rev=$rev" >> "$GITHUB_OUTPUT"
 
       - name: Build image (aarch64-linux)
-        run: nix build .#clawdbot-docker --system aarch64-linux
+        shell: bash
+        run: |
+          set -euo pipefail
+          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          nix build .#clawdbot-docker --system aarch64-linux
 
       - name: Load image
-        run: docker load < result
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker load < result
 
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
