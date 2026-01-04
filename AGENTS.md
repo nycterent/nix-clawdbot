@@ -15,6 +15,9 @@ Defaults:
 - NEVER send any message (iMessage, email, SMS, etc.) without explicit user confirmation:
   - Always show the full message text and ask: “I’m going to send this: <message>. Send? (y/n)”
 
+Clawdbot packaging:
+- The gateway package must include Control UI assets (run `pnpm ui:build` in the Nix build).
+
 Philosophy:
 
 The Zen of ~~Python~~ Clawdbot, ~~by~~ shamelessly stolen from Tim Peters
