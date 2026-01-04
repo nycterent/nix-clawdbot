@@ -78,6 +78,31 @@ My setup:
 Reference the README and templates/agent-first/flake.nix in the repo for the module options.
 ```
 
+## Docker POC (macOS host, headless)
+
+Zen of Clawdbot: Explicit is better than implicit. Simple is better than complex.
+
+This is a Telegram-only, headless gateway. The macOS app is separate.
+
+Build the image with Determinate Nix (uses a Linux builder under the hood):
+
+```bash
+nix build .#clawdbot-docker --system x86_64-linux
+docker load < result
+```
+
+Run it (state lives in a mounted volume at /data):
+
+```bash
+docker run --rm -p 18789:18789 -v clawdbot-data:/data \
+  -e CLAWDBOT_TELEGRAM_BOT_TOKEN="$BOT_TOKEN" \
+  -e CLAWDBOT_TELEGRAM_ALLOW_FROM="12345678,-1001234567890" \
+  -e CLAWDBOT_ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" \
+  clawdbot:latest
+```
+
+Swap updates with zero downtime: start a new container on the same volume, then stop the old one.
+
 ## Minimal config (single‑instance)
 
 Use this for the simplest setup. For richer config (per‑group overrides), use
@@ -409,6 +434,7 @@ Deliverables: flake output, env overrides, AGENTS.md, skill update.
 | `clawdbot` (default) | Gateway + app + full toolchain |
 | `clawdbot-gateway` | Gateway CLI only |
 | `clawdbot-app` | macOS app only |
+| `clawdbot-docker` | OCI image (gateway + tools) |
 
 ## Plugin collisions (override policy)
 
