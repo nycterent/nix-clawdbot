@@ -66,8 +66,7 @@ Non‑goals:
   - `packages.<system>.clawdbot` (default batteries‑included bundle)
   - `packages.<system>.clawdbot-gateway`
   - `packages.<system>.clawdbot-app`
-  - `packages.<system>.clawdbot-tools-base`
-  - `packages.<system>.clawdbot-tools-extended`
+  - `packages.<system>.clawdbot-tools`
   - `homeManagerModules.clawdbot`
   - `darwinModules.clawdbot` (if needed)
 
@@ -135,4 +134,3 @@ This RFC is complete when:
 - App DMG pinned to `v2.0.0-beta4`.
 - Batteries‑included package output is wired in the flake.
 - README is the single onboarding source.
-

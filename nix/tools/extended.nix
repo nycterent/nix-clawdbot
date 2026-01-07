@@ -25,7 +25,7 @@ let
     "ripgrep"
   ];
 
-  extendedNames = baseNames ++ [
+  extraNames = [
     "go"
     "uv"
     "openai-whisper"
@@ -48,8 +48,8 @@ let
     "qmd"
     "nano-pdf"
   ];
+  toolNames = baseNames ++ extraNames;
 
 in {
-  base = ensure baseNames;
-  extended = ensure extendedNames;
+  tools = ensure toolNames;
 }

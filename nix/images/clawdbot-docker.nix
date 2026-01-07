@@ -7,7 +7,7 @@ let
     dontUnpack = true;
     installPhase = "${../scripts/docker-entrypoint-install.sh}";
   };
-  toolsBase = pkgs.clawdbot-tools-base;
+  toolsBase = pkgs.clawdbot-tools;
   baseContents = [
     pkgs.bash
     pkgs.coreutils

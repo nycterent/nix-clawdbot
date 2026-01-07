@@ -13,22 +13,17 @@ let
     pnpmDepsHash = sourceInfo.pnpmDepsHash or null;
   };
   clawdbotApp = if isDarwin then pkgs.callPackage ./clawdbot-app.nix { } else null;
-  clawdbotToolsBase = pkgs.buildEnv {
-    name = "clawdbot-tools-base";
-    paths = toolSets.base;
-  };
-  clawdbotToolsExtended = pkgs.buildEnv {
-    name = "clawdbot-tools-extended";
-    paths = toolSets.extended;
+  clawdbotTools = pkgs.buildEnv {
+    name = "clawdbot-tools";
+    paths = toolSets.tools;
   };
   clawdbotBundle = pkgs.callPackage ./clawdbot-batteries.nix {
     clawdbot-gateway = clawdbotGateway;
     clawdbot-app = clawdbotApp;
-    extendedTools = toolSets.base;
+    extendedTools = toolSets.tools;
   };
 in {
   clawdbot-gateway = clawdbotGateway;
   clawdbot = clawdbotBundle;
-  clawdbot-tools-base = clawdbotToolsBase;
-  clawdbot-tools-extended = clawdbotToolsExtended;
+  clawdbot-tools = clawdbotTools;
 } // (if isDarwin then { clawdbot-app = clawdbotApp; } else {})

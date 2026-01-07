@@ -677,6 +677,7 @@ home-manager switch --rollback  # revert
 | --- | --- |
 | `clawdbot` (default) | macOS: gateway + app + tools · Linux: gateway + tools (headless) |
 | `clawdbot-gateway` | Gateway CLI only |
+| `clawdbot-tools` | Toolchain bundle (gateway helpers + CLIs) |
 | `clawdbot-app` | macOS app only |
 | `clawdbot-docker` | OCI image tarball (gateway + tools) |
 | `clawdbot-docker-stream` | OCI image stream (fast load) |
