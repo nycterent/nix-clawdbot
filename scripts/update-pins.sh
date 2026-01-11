@@ -58,6 +58,9 @@ fi
 
 selected_sha=""
 selected_hash=""
+selected_source_store_path=""
+selected_source_url=""
+
 for sha in "${candidate_shas[@]}"; do
   if ! upstream_checks_green "$sha"; then
     continue
@@ -80,6 +83,11 @@ for sha in "${candidate_shas[@]}"; do
   if [[ -z "$source_hash" ]]; then
     printf '%s\n' "$source_prefetch" >&2
     echo "Failed to parse source hash for $sha" >&2
+    continue
+  fi
+  source_store_path=$(printf '%s' "$source_prefetch" | jq -r '.path // .storePath // empty')
+  if [[ -z "$source_store_path" ]]; then
+    echo "Failed to parse source store path for $sha" >&2
     continue
   fi
   log "Source hash: $source_hash"
@@ -110,6 +118,8 @@ for sha in "${candidate_shas[@]}"; do
   rm -f "$build_log"
   selected_sha="$sha"
   selected_hash="$source_hash"
+  selected_source_store_path="$source_store_path"
+  selected_source_url="$source_url"
   break
 done
 
@@ -163,6 +173,29 @@ perl -0pi -e "s|version = \"[^\"]+\";|version = \"${app_version}\";|" "$app_file
 perl -0pi -e "s|url = \"[^\"]+\";|url = \"${app_url}\";|" "$app_file"
 perl -0pi -e "s|hash = \"[^\"]+\";|hash = \"${app_hash}\";|" "$app_file"
 
+if [[ -z "$selected_source_store_path" ]]; then
+  echo "Missing source path for selected upstream revision" >&2
+  exit 1
+fi
+
+log "Regenerating clawdbot config options from upstream schema"
+tmp_src=$(mktemp -d)
+cleanup_tmp() {
+  rm -rf "$tmp_src"
+}
+trap cleanup_tmp EXIT
+cp -R "$selected_source_store_path" "$tmp_src/src"
+chmod -R u+w "$tmp_src/src"
+
+nix shell --extra-experimental-features "nix-command flakes" nixpkgs#nodejs_22 nixpkgs#pnpm_10 -c \
+  bash -c "cd '$tmp_src/src' && pnpm install --frozen-lockfile --ignore-scripts"
+
+nix shell --extra-experimental-features "nix-command flakes" nixpkgs#nodejs_22 nixpkgs#pnpm_10 -c \
+  bash -c "cd '$tmp_src/src' && pnpm exec tsx '$repo_root/nix/scripts/generate-config-options.ts' --repo . --out '$repo_root/nix/generated/clawdbot-config-options.nix'"
+
+cleanup_tmp
+trap - EXIT
+
 log "Building app to validate fetchzip hash"
 current_system=$(nix eval --impure --raw --expr 'builtins.currentSystem' 2>/dev/null || true)
 if [[ "$current_system" == *darwin* ]]; then
@@ -177,7 +210,7 @@ if git diff --quiet; then
 fi
 
 log "Committing updated pins"
-git add "$source_file" "$app_file"
+git add "$source_file" "$app_file" "$repo_root/nix/generated/clawdbot-config-options.nix"
 git commit -F - <<'EOF'
 🤖 codex: bump clawdbot pins (no-issue)
 
@@ -185,6 +218,7 @@ What:
 - pin clawdbot source to latest upstream main
 - refresh macOS app pin to latest release asset
 - update source and app hashes
+- regenerate config options from upstream schema
 
 Why:
 - keep nix-clawdbot on latest upstream for yolo mode

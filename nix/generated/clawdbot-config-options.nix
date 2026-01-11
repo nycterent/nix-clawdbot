@@ -24,8 +24,88 @@ in
         };
       }; };
       };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
       blockStreamingDefault = lib.mkOption {
         type = t.oneOf [ t.enum [ "off" ] t.enum [ "on" ] ];
+      };
+      cliBackends = lib.mkOption {
+        type = t.attrsOf (t.submodule { options = {
+        args = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        clearEnv = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        command = lib.mkOption {
+          type = t.str;
+        };
+        env = lib.mkOption {
+          type = t.attrsOf (t.str);
+        };
+        imageArg = lib.mkOption {
+          type = t.str;
+        };
+        imageMode = lib.mkOption {
+          type = t.oneOf [ t.enum [ "repeat" ] t.enum [ "list" ] ];
+        };
+        input = lib.mkOption {
+          type = t.oneOf [ t.enum [ "arg" ] t.enum [ "stdin" ] ];
+        };
+        maxPromptArgChars = lib.mkOption {
+          type = t.int;
+        };
+        modelAliases = lib.mkOption {
+          type = t.attrsOf (t.str);
+        };
+        modelArg = lib.mkOption {
+          type = t.str;
+        };
+        output = lib.mkOption {
+          type = t.oneOf [ t.enum [ "json" ] t.enum [ "text" ] t.enum [ "jsonl" ] ];
+        };
+        resumeArgs = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        resumeOutput = lib.mkOption {
+          type = t.oneOf [ t.enum [ "json" ] t.enum [ "text" ] t.enum [ "jsonl" ] ];
+        };
+        serialize = lib.mkOption {
+          type = t.bool;
+        };
+        sessionArg = lib.mkOption {
+          type = t.str;
+        };
+        sessionArgs = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        sessionIdFields = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        sessionMode = lib.mkOption {
+          type = t.oneOf [ t.enum [ "always" ] t.enum [ "existing" ] t.enum [ "none" ] ];
+        };
+        systemPromptArg = lib.mkOption {
+          type = t.str;
+        };
+        systemPromptMode = lib.mkOption {
+          type = t.oneOf [ t.enum [ "append" ] t.enum [ "replace" ] ];
+        };
+        systemPromptWhen = lib.mkOption {
+          type = t.oneOf [ t.enum [ "first" ] t.enum [ "always" ] t.enum [ "never" ] ];
+        };
+      }; });
       };
       contextPruning = lib.mkOption {
         type = t.submodule { options = {
@@ -93,6 +173,9 @@ in
         every = lib.mkOption {
           type = t.str;
         };
+        includeReasoning = lib.mkOption {
+          type = t.bool;
+        };
         model = lib.mkOption {
           type = t.str;
         };
@@ -104,6 +187,19 @@ in
         };
         to = lib.mkOption {
           type = t.str;
+        };
+      }; };
+      };
+      humanDelay = lib.mkOption {
+        type = t.submodule { options = {
+        maxMs = lib.mkOption {
+          type = t.int;
+        };
+        minMs = lib.mkOption {
+          type = t.int;
+        };
+        mode = lib.mkOption {
+          type = t.oneOf [ t.enum [ "off" ] t.enum [ "natural" ] t.enum [ "custom" ] ];
         };
       }; };
       };
@@ -147,6 +243,24 @@ in
         type = t.submodule { options = {
         browser = lib.mkOption {
           type = t.submodule { options = {
+          allowHostControl = lib.mkOption {
+            type = t.bool;
+          };
+          allowedControlHosts = lib.mkOption {
+            type = t.listOf (t.str);
+          };
+          allowedControlPorts = lib.mkOption {
+            type = t.listOf (t.int);
+          };
+          allowedControlUrls = lib.mkOption {
+            type = t.listOf (t.str);
+          };
+          autoStart = lib.mkOption {
+            type = t.bool;
+          };
+          autoStartTimeoutMs = lib.mkOption {
+            type = t.int;
+          };
           cdpPort = lib.mkOption {
             type = t.int;
           };
@@ -325,6 +439,19 @@ in
         };
       }; };
       };
+      humanDelay = lib.mkOption {
+        type = t.submodule { options = {
+        maxMs = lib.mkOption {
+          type = t.int;
+        };
+        minMs = lib.mkOption {
+          type = t.int;
+        };
+        mode = lib.mkOption {
+          type = t.oneOf [ t.enum [ "off" ] t.enum [ "natural" ] t.enum [ "custom" ] ];
+        };
+      }; };
+      };
       id = lib.mkOption {
         type = t.str;
       };
@@ -351,6 +478,24 @@ in
         type = t.submodule { options = {
         browser = lib.mkOption {
           type = t.submodule { options = {
+          allowHostControl = lib.mkOption {
+            type = t.bool;
+          };
+          allowedControlHosts = lib.mkOption {
+            type = t.listOf (t.str);
+          };
+          allowedControlPorts = lib.mkOption {
+            type = t.listOf (t.int);
+          };
+          allowedControlUrls = lib.mkOption {
+            type = t.listOf (t.str);
+          };
+          autoStart = lib.mkOption {
+            type = t.bool;
+          };
+          autoStartTimeoutMs = lib.mkOption {
+            type = t.int;
+          };
           cdpPort = lib.mkOption {
             type = t.int;
           };
@@ -490,6 +635,16 @@ in
         deny = lib.mkOption {
           type = t.listOf (t.str);
         };
+        elevated = lib.mkOption {
+          type = t.submodule { options = {
+          allowFrom = lib.mkOption {
+            type = t.attrsOf (t.listOf (t.oneOf [ t.str t.number ]));
+          };
+          enabled = lib.mkOption {
+            type = t.bool;
+          };
+        }; };
+        };
         sandbox = lib.mkOption {
           type = t.submodule { options = {
           tools = lib.mkOption {
@@ -531,6 +686,22 @@ in
 
   auth = lib.mkOption {
     type = t.submodule { options = {
+    cooldowns = lib.mkOption {
+      type = t.submodule { options = {
+      billingBackoffHours = lib.mkOption {
+        type = t.number;
+      };
+      billingBackoffHoursByProvider = lib.mkOption {
+        type = t.attrsOf (t.number);
+      };
+      billingMaxHours = lib.mkOption {
+        type = t.number;
+      };
+      failureWindowHours = lib.mkOption {
+        type = t.number;
+      };
+    }; };
+    };
     order = lib.mkOption {
       type = t.attrsOf (t.listOf (t.str));
     };
@@ -594,6 +765,14 @@ in
     };
     port = lib.mkOption {
       type = t.int;
+    };
+  }; };
+  };
+
+  broadcast = lib.mkOption {
+    type = t.submodule { options = {
+    strategy = lib.mkOption {
+      type = t.enum [ "parallel" "sequential" ];
     };
   }; };
   };
@@ -662,6 +841,12 @@ in
 
   commands = lib.mkOption {
     type = t.submodule { options = {
+    config = lib.mkOption {
+      type = t.bool;
+    };
+    debug = lib.mkOption {
+      type = t.bool;
+    };
     native = lib.mkOption {
       type = t.bool;
     };
@@ -743,6 +928,25 @@ in
           type = t.bool;
         };
       }; };
+      };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
       };
       dm = lib.mkOption {
         type = t.submodule { options = {
@@ -894,6 +1098,25 @@ in
         type = t.bool;
       };
     }; };
+    };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
     };
     dm = lib.mkOption {
       type = t.submodule { options = {
@@ -1059,6 +1282,21 @@ in
       };
     }; };
     };
+    http = lib.mkOption {
+      type = t.submodule { options = {
+      endpoints = lib.mkOption {
+        type = t.submodule { options = {
+        chatCompletions = lib.mkOption {
+          type = t.submodule { options = {
+          enabled = lib.mkOption {
+            type = t.bool;
+          };
+        }; };
+        };
+      }; };
+      };
+    }; };
+    };
     mode = lib.mkOption {
       type = t.oneOf [ t.enum [ "local" ] t.enum [ "remote" ] ];
     };
@@ -1129,6 +1367,9 @@ in
       maxBytes = lib.mkOption {
         type = t.int;
       };
+      model = lib.mkOption {
+        type = t.str;
+      };
       pushToken = lib.mkOption {
         type = t.str;
       };
@@ -1159,7 +1400,13 @@ in
         path = lib.mkOption {
           type = t.str;
         };
+        target = lib.mkOption {
+          type = t.str;
+        };
       }; };
+      };
+      thinking = lib.mkOption {
+        type = t.oneOf [ t.enum [ "off" ] t.enum [ "minimal" ] t.enum [ "low" ] t.enum [ "medium" ] t.enum [ "high" ] ];
       };
       topic = lib.mkOption {
         type = t.str;
@@ -1254,6 +1501,25 @@ in
       allowFrom = lib.mkOption {
         type = t.listOf (t.oneOf [ t.str t.number ]);
       };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
+      };
       cliPath = lib.mkOption {
         type = t.str;
       };
@@ -1279,6 +1545,9 @@ in
         };
       }; });
       };
+      historyLimit = lib.mkOption {
+        type = t.int;
+      };
       includeAttachments = lib.mkOption {
         type = t.bool;
       };
@@ -1301,6 +1570,25 @@ in
     };
     allowFrom = lib.mkOption {
       type = t.listOf (t.oneOf [ t.str t.number ]);
+    };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
     };
     cliPath = lib.mkOption {
       type = t.str;
@@ -1326,6 +1614,9 @@ in
         type = t.bool;
       };
     }; });
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
     };
     includeAttachments = lib.mkOption {
       type = t.bool;
@@ -1436,6 +1727,9 @@ in
       };
     }; };
     };
+    removeAckAfterReply = lib.mkOption {
+      type = t.bool;
+    };
     responsePrefix = lib.mkOption {
       type = t.str;
     };
@@ -1540,11 +1834,30 @@ in
     appPassword = lib.mkOption {
       type = t.str;
     };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
+    };
     dmPolicy = lib.mkOption {
       type = t.enum [ "pairing" "allowlist" "open" "disabled" ];
     };
     enabled = lib.mkOption {
       type = t.bool;
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
     };
     mediaAllowHosts = lib.mkOption {
       type = t.listOf (t.str);
@@ -1588,6 +1901,37 @@ in
       };
       port = lib.mkOption {
         type = t.int;
+      };
+    }; };
+    };
+  }; };
+  };
+
+  plugins = lib.mkOption {
+    type = t.submodule { options = {
+    allow = lib.mkOption {
+      type = t.listOf (t.str);
+    };
+    deny = lib.mkOption {
+      type = t.listOf (t.str);
+    };
+    enabled = lib.mkOption {
+      type = t.bool;
+    };
+    entries = lib.mkOption {
+      type = t.attrsOf (t.submodule { options = {
+      config = lib.mkOption {
+        type = t.attrsOf (t.anything);
+      };
+      enabled = lib.mkOption {
+        type = t.bool;
+      };
+    }; });
+    };
+    load = lib.mkOption {
+      type = t.submodule { options = {
+      paths = lib.mkOption {
+        type = t.listOf (t.str);
       };
     }; };
     };
@@ -1673,6 +2017,25 @@ in
       autoStart = lib.mkOption {
         type = t.bool;
       };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
+      };
       cliPath = lib.mkOption {
         type = t.str;
       };
@@ -1687,6 +2050,9 @@ in
       };
       groupPolicy = lib.mkOption {
         type = t.enum [ "open" "disabled" "allowlist" ];
+      };
+      historyLimit = lib.mkOption {
+        type = t.int;
       };
       httpHost = lib.mkOption {
         type = t.str;
@@ -1709,6 +2075,12 @@ in
       name = lib.mkOption {
         type = t.str;
       };
+      reactionAllowlist = lib.mkOption {
+        type = t.listOf (t.oneOf [ t.str t.number ]);
+      };
+      reactionNotifications = lib.mkOption {
+        type = t.enum [ "off" "own" "all" "allowlist" ];
+      };
       receiveMode = lib.mkOption {
         type = t.oneOf [ t.enum [ "on-start" ] t.enum [ "manual" ] ];
       };
@@ -1726,6 +2098,25 @@ in
     autoStart = lib.mkOption {
       type = t.bool;
     };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
+    };
     cliPath = lib.mkOption {
       type = t.str;
     };
@@ -1740,6 +2131,9 @@ in
     };
     groupPolicy = lib.mkOption {
       type = t.enum [ "open" "disabled" "allowlist" ];
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
     };
     httpHost = lib.mkOption {
       type = t.str;
@@ -1761,6 +2155,12 @@ in
     };
     name = lib.mkOption {
       type = t.str;
+    };
+    reactionAllowlist = lib.mkOption {
+      type = t.listOf (t.oneOf [ t.str t.number ]);
+    };
+    reactionNotifications = lib.mkOption {
+      type = t.enum [ "off" "own" "all" "allowlist" ];
     };
     receiveMode = lib.mkOption {
       type = t.oneOf [ t.enum [ "on-start" ] t.enum [ "manual" ] ];
@@ -1850,8 +2250,27 @@ in
       appToken = lib.mkOption {
         type = t.str;
       };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
       botToken = lib.mkOption {
         type = t.str;
+      };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
       };
       channels = lib.mkOption {
         type = t.attrsOf (t.submodule { options = {
@@ -1902,6 +2321,9 @@ in
       };
       groupPolicy = lib.mkOption {
         type = t.enum [ "open" "disabled" "allowlist" ];
+      };
+      historyLimit = lib.mkOption {
+        type = t.int;
       };
       mediaMaxMb = lib.mkOption {
         type = t.number;
@@ -1973,8 +2395,27 @@ in
     appToken = lib.mkOption {
       type = t.str;
     };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
     botToken = lib.mkOption {
       type = t.str;
+    };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
     };
     channels = lib.mkOption {
       type = t.attrsOf (t.submodule { options = {
@@ -2025,6 +2466,9 @@ in
     };
     groupPolicy = lib.mkOption {
       type = t.enum [ "open" "disabled" "allowlist" ];
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
     };
     mediaMaxMb = lib.mkOption {
       type = t.number;
@@ -2100,11 +2544,43 @@ in
       allowFrom = lib.mkOption {
         type = t.listOf (t.oneOf [ t.str t.number ]);
       };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
       botToken = lib.mkOption {
         type = t.str;
       };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
+      };
       dmPolicy = lib.mkOption {
         type = t.enum [ "pairing" "allowlist" "open" "disabled" ];
+      };
+      draftChunk = lib.mkOption {
+        type = t.submodule { options = {
+        breakPreference = lib.mkOption {
+          type = t.oneOf [ t.enum [ "paragraph" ] t.enum [ "newline" ] t.enum [ "sentence" ] ];
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
       };
       enabled = lib.mkOption {
         type = t.bool;
@@ -2152,6 +2628,9 @@ in
         }; });
         };
       }; });
+      };
+      historyLimit = lib.mkOption {
+        type = t.int;
       };
       mediaMaxMb = lib.mkOption {
         type = t.number;
@@ -2211,11 +2690,43 @@ in
     allowFrom = lib.mkOption {
       type = t.listOf (t.oneOf [ t.str t.number ]);
     };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
     botToken = lib.mkOption {
       type = t.str;
     };
+    capabilities = lib.mkOption {
+      type = t.listOf (t.str);
+    };
     dmPolicy = lib.mkOption {
       type = t.enum [ "pairing" "allowlist" "open" "disabled" ];
+    };
+    draftChunk = lib.mkOption {
+      type = t.submodule { options = {
+      breakPreference = lib.mkOption {
+        type = t.oneOf [ t.enum [ "paragraph" ] t.enum [ "newline" ] t.enum [ "sentence" ] ];
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
     };
     enabled = lib.mkOption {
       type = t.bool;
@@ -2263,6 +2774,9 @@ in
       }; });
       };
     }; });
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
     };
     mediaMaxMb = lib.mkOption {
       type = t.number;
@@ -2328,6 +2842,20 @@ in
     allow = lib.mkOption {
       type = t.listOf (t.str);
     };
+    audio = lib.mkOption {
+      type = t.submodule { options = {
+      transcription = lib.mkOption {
+        type = t.submodule { options = {
+        args = lib.mkOption {
+          type = t.listOf (t.str);
+        };
+        timeoutSeconds = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
+    }; };
+    };
     bash = lib.mkOption {
       type = t.submodule { options = {
       backgroundMs = lib.mkOption {
@@ -2347,29 +2875,7 @@ in
     elevated = lib.mkOption {
       type = t.submodule { options = {
       allowFrom = lib.mkOption {
-        type = t.submodule { options = {
-        discord = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        imessage = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        signal = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        slack = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        telegram = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        webchat = lib.mkOption {
-          type = t.listOf (t.oneOf [ t.str t.number ]);
-        };
-        whatsapp = lib.mkOption {
-          type = t.listOf (t.str);
-        };
-      }; };
+        type = t.attrsOf (t.listOf (t.oneOf [ t.str t.number ]));
       };
       enabled = lib.mkOption {
         type = t.bool;
@@ -2449,11 +2955,43 @@ in
     type = t.submodule { options = {
     accounts = lib.mkOption {
       type = t.attrsOf (t.submodule { options = {
+      ackReaction = lib.mkOption {
+        type = t.submodule { options = {
+        direct = lib.mkOption {
+          type = t.bool;
+        };
+        emoji = lib.mkOption {
+          type = t.str;
+        };
+        group = lib.mkOption {
+          type = t.enum [ "always" "mentions" "never" ];
+        };
+      }; };
+      };
       allowFrom = lib.mkOption {
         type = t.listOf (t.str);
       };
       authDir = lib.mkOption {
         type = t.str;
+      };
+      blockStreaming = lib.mkOption {
+        type = t.bool;
+      };
+      blockStreamingCoalesce = lib.mkOption {
+        type = t.submodule { options = {
+        idleMs = lib.mkOption {
+          type = t.int;
+        };
+        maxChars = lib.mkOption {
+          type = t.int;
+        };
+        minChars = lib.mkOption {
+          type = t.int;
+        };
+      }; };
+      };
+      capabilities = lib.mkOption {
+        type = t.listOf (t.str);
       };
       dmPolicy = lib.mkOption {
         type = t.enum [ "pairing" "allowlist" "open" "disabled" ];
@@ -2474,6 +3012,15 @@ in
         };
       }; });
       };
+      historyLimit = lib.mkOption {
+        type = t.int;
+      };
+      mediaMaxMb = lib.mkOption {
+        type = t.int;
+      };
+      messagePrefix = lib.mkOption {
+        type = t.str;
+      };
       name = lib.mkOption {
         type = t.str;
       };
@@ -2485,14 +3032,52 @@ in
       };
     }; });
     };
+    ackReaction = lib.mkOption {
+      type = t.submodule { options = {
+      direct = lib.mkOption {
+        type = t.bool;
+      };
+      emoji = lib.mkOption {
+        type = t.str;
+      };
+      group = lib.mkOption {
+        type = t.enum [ "always" "mentions" "never" ];
+      };
+    }; };
+    };
     actions = lib.mkOption {
       type = t.submodule { options = {
+      polls = lib.mkOption {
+        type = t.bool;
+      };
       reactions = lib.mkOption {
+        type = t.bool;
+      };
+      sendMessage = lib.mkOption {
         type = t.bool;
       };
     }; };
     };
     allowFrom = lib.mkOption {
+      type = t.listOf (t.str);
+    };
+    blockStreaming = lib.mkOption {
+      type = t.bool;
+    };
+    blockStreamingCoalesce = lib.mkOption {
+      type = t.submodule { options = {
+      idleMs = lib.mkOption {
+        type = t.int;
+      };
+      maxChars = lib.mkOption {
+        type = t.int;
+      };
+      minChars = lib.mkOption {
+        type = t.int;
+      };
+    }; };
+    };
+    capabilities = lib.mkOption {
       type = t.listOf (t.str);
     };
     dmPolicy = lib.mkOption {
@@ -2510,6 +3095,15 @@ in
         type = t.bool;
       };
     }; });
+    };
+    historyLimit = lib.mkOption {
+      type = t.int;
+    };
+    mediaMaxMb = lib.mkOption {
+      type = t.int;
+    };
+    messagePrefix = lib.mkOption {
+      type = t.str;
     };
     selfChatMode = lib.mkOption {
       type = t.bool;

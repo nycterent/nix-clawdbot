@@ -1,0 +1,19 @@
+name: Config Options Guard
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  config-options:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v13
+
+      - name: Verify config options are up to date
+        run: nix build .#checks.x86_64-linux.config-options --print-build-logs
