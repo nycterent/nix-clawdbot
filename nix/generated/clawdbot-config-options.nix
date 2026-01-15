@@ -2468,7 +2468,7 @@ in
           type = t.enum [ "off" "ack" "minimal" "extensive" ];
         };
         reactionNotifications = lib.mkOption {
-          type = t.enum [ "off" "all" ];
+          type = t.enum [ "off" "own" "all" ];
         };
         replyToMode = lib.mkOption {
           type = t.oneOf [ t.enum [ "off" ] t.enum [ "first" ] t.enum [ "all" ] ];
@@ -2649,7 +2649,7 @@ in
         type = t.enum [ "off" "ack" "minimal" "extensive" ];
       };
       reactionNotifications = lib.mkOption {
-        type = t.enum [ "off" "all" ];
+        type = t.enum [ "off" "own" "all" ];
       };
       replyToMode = lib.mkOption {
         type = t.oneOf [ t.enum [ "off" ] t.enum [ "first" ] t.enum [ "all" ] ];
