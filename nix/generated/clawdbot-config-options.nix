@@ -2333,7 +2333,13 @@ in
         type = t.attrsOf (t.submodule { options = {
         actions = lib.mkOption {
           type = t.submodule { options = {
+          deleteMessage = lib.mkOption {
+            type = t.bool;
+          };
           reactions = lib.mkOption {
+            type = t.bool;
+          };
+          sendMessage = lib.mkOption {
             type = t.bool;
           };
         }; };
@@ -2458,6 +2464,12 @@ in
         proxy = lib.mkOption {
           type = t.str;
         };
+        reactionLevel = lib.mkOption {
+          type = t.enum [ "off" "ack" "minimal" "extensive" ];
+        };
+        reactionNotifications = lib.mkOption {
+          type = t.enum [ "off" "all" ];
+        };
         replyToMode = lib.mkOption {
           type = t.oneOf [ t.enum [ "off" ] t.enum [ "first" ] t.enum [ "all" ] ];
         };
@@ -2502,7 +2514,13 @@ in
       };
       actions = lib.mkOption {
         type = t.submodule { options = {
+        deleteMessage = lib.mkOption {
+          type = t.bool;
+        };
         reactions = lib.mkOption {
+          type = t.bool;
+        };
+        sendMessage = lib.mkOption {
           type = t.bool;
         };
       }; };
@@ -2626,6 +2644,12 @@ in
       };
       proxy = lib.mkOption {
         type = t.str;
+      };
+      reactionLevel = lib.mkOption {
+        type = t.enum [ "off" "ack" "minimal" "extensive" ];
+      };
+      reactionNotifications = lib.mkOption {
+        type = t.enum [ "off" "all" ];
       };
       replyToMode = lib.mkOption {
         type = t.oneOf [ t.enum [ "off" ] t.enum [ "first" ] t.enum [ "all" ] ];
