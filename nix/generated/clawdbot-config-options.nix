@@ -1048,6 +1048,25 @@ in
     port = lib.mkOption {
       type = t.int;
     };
+    tls = lib.mkOption {
+      type = t.submodule { options = {
+      autoGenerate = lib.mkOption {
+        type = t.bool;
+      };
+      caPath = lib.mkOption {
+        type = t.str;
+      };
+      certPath = lib.mkOption {
+        type = t.str;
+      };
+      enabled = lib.mkOption {
+        type = t.bool;
+      };
+      keyPath = lib.mkOption {
+        type = t.str;
+      };
+    }; };
+    };
   }; };
   };
 
@@ -3489,6 +3508,28 @@ in
       };
       enabled = lib.mkOption {
         type = t.bool;
+      };
+    }; });
+    };
+    installs = lib.mkOption {
+      type = t.attrsOf (t.submodule { options = {
+      installPath = lib.mkOption {
+        type = t.str;
+      };
+      installedAt = lib.mkOption {
+        type = t.str;
+      };
+      source = lib.mkOption {
+        type = t.oneOf [ t.enum [ "npm" ] t.enum [ "archive" ] t.enum [ "path" ] ];
+      };
+      sourcePath = lib.mkOption {
+        type = t.str;
+      };
+      spec = lib.mkOption {
+        type = t.str;
+      };
+      version = lib.mkOption {
+        type = t.str;
       };
     }; });
     };
