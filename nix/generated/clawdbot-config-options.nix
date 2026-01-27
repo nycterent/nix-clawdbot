@@ -3916,6 +3916,13 @@ in
         name = lib.mkOption {
           type = t.str;
         };
+        network = lib.mkOption {
+          type = t.submodule { options = {
+          autoSelectFamily = lib.mkOption {
+            type = t.bool;
+          };
+        }; };
+        };
         proxy = lib.mkOption {
           type = t.str;
         };
@@ -4152,6 +4159,13 @@ in
       };
       name = lib.mkOption {
         type = t.str;
+      };
+      network = lib.mkOption {
+        type = t.submodule { options = {
+        autoSelectFamily = lib.mkOption {
+          type = t.bool;
+        };
+      }; };
       };
       proxy = lib.mkOption {
         type = t.str;
